@@ -1,21 +1,22 @@
 % perform multi class SVM on data
 
-% clear all
-% close all
+clear all
+close all
 
-%addpath('../../Software/liblinear-2.1/matlab');  % add LIBLINEAR to Mika path
+addpath('../../Homeworks/HW2/Matlab/liblinear-2.1/matlab');  % add LIBLINEAR to Mika path
 
-addpath('../../../Software/liblinear-2.1/matlab'); % add LIBLINEAR to Nina path
+%addpath('../../../Software/liblinear-2.1/matlab'); % add LIBLINEAR to Nina path
 
 %% chose feature type
-filename = 'BoWpca_data.txt';
+filename = 'data_features/PCA_FV_data.txt';
 str = sprintf('Loading images representations from file %s...', filename);
 fprintf(str);
 M = dlmread(filename,'\t');
+M = [repmat(1,size(M,1)) M];
 sparseMatrix = sparse(M);
 fprintf('done.\n');
 
-label_vector = dlmread('labels.txt');
+label_vector = dlmread('data_features/labels.txt');
 
 %% options
 
