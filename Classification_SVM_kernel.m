@@ -8,7 +8,7 @@ addpath('../Matlab/libsvm-3.20/matlab');  % add LIBSVM to Mika path
 %addpath('../../../Software/liblinear-2.1/matlab'); % add LIBSVM to Nina path
 
 %% chose feature type
-filename = 'data_features/BoWpca_data.txt';
+filename = 'data_features/BoW_step30_K500_data.txt';
 str = sprintf('Loading images representations from file %s...', filename);
 fprintf(str);
 M = dlmread(filename,'');
