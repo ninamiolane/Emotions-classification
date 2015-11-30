@@ -9,38 +9,52 @@ clc
 % Global Parameters
 M=327;
 SIFT_type = 'dSIFT';
-filename = strcat(SIFT_type,'_data.txt');
-data_folder='averaged_images/';
 numModes = 64; % number of eigenvectors to keep for PCA
 
-str = sprintf('## Compute PCA on the %s local descriptors', SIFT_type);
+% Input and output files
+filename_perIMG = strcat('data_features/SIFT_perIMG_data.txt');
+filename_perSIFT = strcat('data_features/SIFT_data.txt');
+eigenvectors_filename = strcat('data_features/eigenvectors_data.txt.mat');
+weights_perSIFT_filename = strcat('data_features/PCAweights_perSIFT_data.txt');
+weights_perIMG_filename = strcat('data_features/PCAweights_perIMG_data.txt');
+
+
+%data_folder='averaged_images/';
+
+str = sprintf('## Script A02: Compute PCA on the %s local descriptors', SIFT_type);
 disp(str);
 
 % Load matrix of (d)SIFTs
-str = sprintf('Loading %s descriptors from file %s...',SIFT_type,filename);
+str = sprintf('Loading %s descriptors per IMG from file %s...',SIFT_type,filename_perIMG);
 fprintf(str);
-SIFT_mat = dlmread(filename); % one line = one image
+SIFT_mat = dlmread(filename_perIMG,'\t'); %,[0 0 5 1]); % one line = one image
 fprintf('done.\n');
 
 %% Extract SIFTS
-str = sprintf('Constructing Design matrix A of %s descriptors...',SIFT_type);
+str = sprintf('Loading %s descriptors per SIFT from file %s...',SIFT_type,filename_perIMG);
 fprintf(str);
-A=[];
-for i=1:2
-    line = squeeze(SIFT_mat(i,:));
-    nbfeatures = line(1);
-    d=zeros(128,nbfeatures);
-    for k=1:nbfeatures
-        if strcmp(SIFT_type,'SIFT') % SIFT = position 2D + orientation/scale + 128 dim = 132 dim
-            aux = line((6+(k-1)*132):(6+(k-1)*132)+127);
-        else % dSIFT = orientation/cale + 128 dim = 130 dim
-            aux = line((4+(k-1)*130):(4+(k-1)*130)+127);
-        end
-        d(:,k)=aux(:)';
-    end
-    A = [A d]; % one column = one SIFT
-end
-nSifts=size(A,2); % number of SIFT descriptors.
+A = dlmread(filename_perSIFT,'\t'); %,[0 0 5 1]); % one line = one SIFT
+A = A';
+fprintf('done.\n');
+% fprintf(str);
+% A=[];
+% for i=1:M
+%     line = squeeze(SIFT_mat(i,:));
+%     nbfeatures = line(1);
+%     %disp(nbfeatures);
+%     d=zeros(128,nbfeatures);
+%     for k=1:nbfeatures
+%         if strcmp(SIFT_type,'SIFT') % SIFT = position 2D + orientation/scale + 128 dim = 132 dim
+%             aux = line((6+(k-1)*132):(6+(k-1)*132)+127);
+%         else % dSIFT = orientation/cale + 128 dim = 130 dim
+%             aux = line((4+(k-1)*130):(4+(k-1)*130)+127);
+%         end
+%         d(:,k)=aux(:)';
+%     end
+%     A = [A d]; % one column = one SIFT
+% end
+% nSifts=size(A,2); % number of SIFT descriptors.
+% %disp(nSifts);
 fprintf('done.\n');
 
 %% Normalize: extract mean and std dev. to standardize the SIFTs?
@@ -99,14 +113,12 @@ fprintf('done.\n');
 
 %% Write matrix of eigenvectors and matrix of weights
 fprintf('Writing matrix of eigenvectors...');
-eigenvectors_filename = strcat('eigenvectors_',SIFT_type,'.mat');
 dlmwrite(eigenvectors_filename,V);
 fprintf('done.\n');
 
 str= strcat('Writing PCA weights per ',SIFT_type,'...');
 fprintf(str)
-weights_file_name = strcat('PCAweights_',SIFT_type,'_per', SIFT_type,'_data.txt');
-fid = fopen(weights_file_name,'w');
+fid = fopen(weights_perSIFT_filename,'w');
 fprintf('done.\n');
 
 for i=1:size(omega,1)
@@ -118,8 +130,7 @@ fclose(fid);
 %% Write PCA weights per image
 % (one line = one image)
 fprintf('Writing PCA weights per image...');
-weights_file_name = strcat('PCAweights_',SIFT_type,'_perIMG_data.txt');
-fid = fopen(weights_file_name,'w');
+fid = fopen(weights_perIMG_filename,'w');
 for i=1:M
     line = squeeze(SIFT_mat(i,:));
     nbfeatures = line(1);

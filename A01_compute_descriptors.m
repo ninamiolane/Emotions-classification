@@ -9,10 +9,11 @@ clc
 % Global Parameters
 SIFT_type= 'dSIFT';
 M=327;
-data_folder='averaged_images/';
 
-str = sprintf('## Compute  %s local descriptors of each image',SIFT_type);
-disp(str);
+%Input and Output file
+data_folder='averaged_images/';
+filename = strcat('data_features/SIFT_perIMG_data.txt');
+filename_perSIFT = strcat('data_features/SIFT_data.txt');
 
 % SIFT Parameters
 peak = 5;
@@ -21,9 +22,12 @@ edge = 6;
 % dSIFT Parameters
 step = 30;
 
-%Fichier dans lequel on ecrit
-filename = strcat(SIFT_type,'_data.txt');
+%% Start
+str = sprintf('## Script A01: Compute  %s local descriptors of each image',SIFT_type);
+disp(str);
+
 fid = fopen(filename,'wt');
+fid_perSIFT = fopen(filename_perSIFT,'wt');
 
 if strcmp(SIFT_type,'SIFT')
     str = sprintf('Computing the SIFTs with Peak Threshold = %d and Edge Threshold = %d...',peak, edge);
@@ -56,18 +60,27 @@ for i=1:M
     % Create line to write
     data = [];
     for k=1:nbfeatures(i)
+        sift = double(d(:,k)');
+        fprintf(fid_perSIFT,'%g\t',sift);
+        fprintf(fid_perSIFT,'\n');
         data = [data f(:,k)' double(d(:,k)')];
     end
     %line = [double(nbfeatures) data];
     line = [single(nbfeatures(i)) single(data)]; % for storage purposes
-    
-    
+        
     % Write in output file
     fprintf(fid,'%g\t',line);
     fprintf(fid,'\n');
 end
-str = strcat('Note: average number of descriptors per image =', mean(nbfeatures));
+fprintf('. done.\n');
+str = strcat('Note: average number of descriptors per image =', int2str(mean(nbfeatures)), ' (normally around 30,000 per img!)');
 disp(str);
 
-str= strcat('DONE: local descriptors per image written in file ', filename);
+
+str= sprintf('DONE: local descriptors per image written in file %s', filename);
 disp(str);
+str= sprintf('and local descriptors written in file %s', filename_perSIFT);
+disp(str);
+
+
+

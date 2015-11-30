@@ -5,12 +5,15 @@ clear all
 close all
 clc
 
-disp('## Script C1pca: Compute Fisher vector representation of each image');
+disp('## Script A04: Compute Fisher vector representation of each image');
 
 % Global Parameters
-SIFT_type= 'dSIFT';
+SIFT_type= 'SIFT';
 M=327;
-filename = strcat('PCAweights_',SIFT_type,'_perIMG_data.txt');
+
+% Input and output files
+filename = strcat('data_features/PCAweights_perIMG_data.txt');
+output_filename = strcat('FV_4.mat');
 
 %% Load matrix of PCA weights per image:
 str = sprintf('Loading projected SIFTs per image from file %s...',filename);
@@ -20,12 +23,12 @@ fprintf('done.\n');
 
 %% Load learned parameters of the GMM
 fprintf('Loading means, covariances and priors of the GMM model ');
-means=dlmread('GMM_means.mat');
+means=dlmread('data_features/GMM_means.mat');
 K = size(means,2);
 str= sprintf('(number of Gaussians = %d)...',K);
 fprintf(str);
-covariances = dlmread('GMM_covariances.mat');
-priors = dlmread('GMM_priors.mat');
+covariances = dlmread('data_features/GMM_covariances.mat');
+priors = dlmread('data_features/GMM_priors.mat');
 fprintf('done.\n');
 
 %% Compute the FV representation for each image i
@@ -57,8 +60,7 @@ end
 fprintf('. done.\n');
 
 %% Write FV representations to file
-output_filename = strcat('FV_dSIFT_data.mat');
-str=strcat('Writing Fisher Vector representation in file: %s', output_filename);
+str=sprintf('Writing Fisher Vector representation in file: %s...', output_filename);
 fprintf(str);
 % fid = fopen('FV_GMM1000_data.mat','wt');
 save(output_filename,'FV_data','-v7.3');
