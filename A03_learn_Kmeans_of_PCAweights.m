@@ -11,7 +11,7 @@ disp('## Script A03: Learn the Kmeans of the PCA weights of local descriptors:')
 % Global Parameters
 SIFT_type= 'dSIFT';
 M=327;
-K = 500;
+K = 30;
 
 % Input and output file
 filename = strcat('data_features/SIFT_perIMG_data.txt');
