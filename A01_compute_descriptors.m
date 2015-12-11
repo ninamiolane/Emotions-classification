@@ -11,16 +11,16 @@ SIFT_type= 'dSIFT';
 M=327;
 
 %Input and Output file
-data_folder='averaged_images/';
+data_folder='resized_images/';
 filename = strcat('data_features/SIFT_perIMG_data.txt');
 filename_perSIFT = strcat('data_features/SIFT_data.txt');
 
 % SIFT Parameters
-peak = 5;
-edge = 6;
+peak = 2;
+edge = 10;
 
 % dSIFT Parameters
-step = 30;
+step = 3;
 
 %% Start
 str = sprintf('## Script A01: Compute  %s local descriptors of each image',SIFT_type);

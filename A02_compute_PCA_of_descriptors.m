@@ -27,14 +27,21 @@ disp(str);
 % Load matrix of (d)SIFTs
 str = sprintf('Loading %s descriptors per IMG from file %s...',SIFT_type,filename_perIMG);
 fprintf(str);
-SIFT_mat = dlmread(filename_perIMG,'\t'); %,[0 0 5 1]); % one line = one image
+%SIFT_mat = dlmread(filename_perIMG,'\t'); %,[0 0 5 1]); % one line = one image
+SIFT_mat = load(filename_perIMG);
 fprintf('done.\n');
 
 %% Extract SIFTS
-str = sprintf('Loading %s descriptors per SIFT from file %s...',SIFT_type,filename_perIMG);
+str = sprintf('Loading %s descriptors per SIFT from file %s...',SIFT_type,filename_perSIFT);
 fprintf(str);
-A = dlmread(filename_perSIFT,'\t'); %,[0 0 5 1]); % one line = one SIFT
+%A = dlmread(filename_perSIFT,'\t');
+A = load(filename_perSIFT);
+%A = A.FV_data;
+%,[0 0 5 1]); % one line = one SIFT
 A = A';
+if (size(A,1)==129)
+    A = A(1:128,:);
+end
 fprintf('done.\n');
 % fprintf(str);
 % A=[];
@@ -55,7 +62,7 @@ fprintf('done.\n');
 % end
 % nSifts=size(A,2); % number of SIFT descriptors.
 % %disp(nSifts);
-fprintf('done.\n');
+%fprintf('done.\n');
 
 %% Normalize: extract mean and std dev. to standardize the SIFTs?
 % For now, assume they are normalized.
